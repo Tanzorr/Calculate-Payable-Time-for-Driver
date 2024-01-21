@@ -28,6 +28,7 @@ class DriverService
 
     public function writeDriversDataToCsv($handle, $driversReport): void
     {
+        fputcsv($handle, ['driver_id', 'total_minutes_with_passenger']);
         foreach ($driversReport as $driver) {
             fputcsv($handle, [$driver->driver_id, round($driver->total_minutes_with_passenger)]);
         }

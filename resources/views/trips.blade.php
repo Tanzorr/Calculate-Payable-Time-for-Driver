@@ -2,14 +2,22 @@
 
 @section('content')
     <h2>Trips table</h2>
-
     <div>
         <a href="{{ route('drivers-report.index') }}">Drivers Reports</a>
     </div>
+    @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
     <div class="row">
-        <form class="form mb-5 mt-5 col-lg-6" action="{{ route('trips.import') }}" method="POST" enctype="multipart/form-data">
+        <form class="form mb-5 mt-5 col-lg-6" action="{{ route('trips.import') }}" method="POST"
+              enctype="multipart/form-data">
             @csrf
             <input type="file" name="file" accept=".csv">
+            @error('file')
+            <div class="alert alert-danger">{{ $message }}</div>
+            @enderror
             <button type="submit">Import CSV</button>
         </form>
         <form class="col-lg-6" method="GET" action="{{ route('trips.calculate') }}">
