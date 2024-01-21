@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Models\Driver;
 
 class TripService
 {
@@ -46,5 +45,15 @@ class TripService
 
         // Update end time if the current trip extends beyond the previous end time
         $totalTime[$driverId]['end'] = max($previousEndTime, $pickupTime);
+    }
+
+    public function getTripFromCsvLine(array $line): array
+    {
+        return [
+            'trip_id' => $line[0],
+            'driver_id' => $line[1],
+            'pickup_time' => $line[2],
+            'dropoff_time' => $line[3],
+        ];
     }
 }

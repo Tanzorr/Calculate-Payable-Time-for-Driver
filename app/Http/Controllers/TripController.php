@@ -16,27 +16,24 @@ class TripController extends Controller
     }
 
 
-    public function import(Request $request)
+    public function import(TripService $tripService, Request $request)
     {
         $request->validate([
             'file' => 'required|mimes:xls,xlsx,csv'
         ]);
 
         $file = $request->file('file');
-
         $fileContents = file($file->getPathname());
 
         foreach ($fileContents as $key => $line) {
             if ($key == 0) {
                 continue;
             }
+
             $line = explode(',', $line);
-            Trip::create([
-                'trip_id' => $line[0],
-                'driver_id' => $line[1],
-                'pickup_time' => $line[2],
-                'dropoff_time' => $line[3],
-            ]);
+            $tripLine = $tripService->getTripFromCsvLine($line);
+
+            Trip::create($tripLine);
         }
 
         return back()->with('success', 'Data Imported successfully.');
@@ -56,5 +53,4 @@ class TripController extends Controller
 
         return back()->with('success', 'Data Calculated successfully.');
     }
-
 }
