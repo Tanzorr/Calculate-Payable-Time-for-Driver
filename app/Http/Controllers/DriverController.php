@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Driver;
-use Illuminate\Http\Request;
+use App\Services\DriverService;
 
 class DriverController extends Controller
 {
@@ -13,35 +13,17 @@ class DriverController extends Controller
         return view('drivers', ['drivers' => $drivers]);
     }
 
-    public function export()
+    public function export(DriverService $driverService)
     {
         $driversReport = Driver::all();
         $csvFileName = 'drivers-report.csv';
 
-        $headers = [
-            "Content-type" => "text/csv",
-            "Content-Disposition" => "attachment; filename=$csvFileName",
-            "Pragma" => "no-cache",
-            "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
-            "Expires" => "0"
-        ];
+        $headers = $driverService->getCsvHeaders($csvFileName);
 
-        $handle = fopen('php://temp', 'w');
-        fputcsv($handle, ['driver_id', 'total_minutes_with_passenger']);
+        $handle = $driverService->initializeCsvHandle();
+        $driverService->writeCsvHeader($handle);
+        $driverService->writeDriversDataToCsv($handle, $driversReport);
 
-        rewind($handle);
-
-        fputcsv($handle, ['driver_id', 'total_minutes_with_passenger']);
-        foreach ($driversReport as $driver) {
-            fputcsv($handle, [$driver->driver_id, round($driver->total_minutes_with_passenger)]);
-        }
-
-        fseek($handle, 0);
-
-        return response()->streamDownload(
-            fn() => fpassthru($handle),
-            $csvFileName,
-            $headers
-        );
+        return $driverService->downloadCsvResponse($handle, $csvFileName, $headers);
     }
 }
