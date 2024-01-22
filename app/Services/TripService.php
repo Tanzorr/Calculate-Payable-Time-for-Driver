@@ -3,6 +3,9 @@
 namespace App\Services;
 
 
+use App\Models\Trip;
+use mysql_xdevapi\Collection;
+
 class TripService
 {
     public function calculateTotalTime($trips): array
@@ -10,9 +13,9 @@ class TripService
         $totalTime = [];
 
         foreach ($trips as $trip) {
-            $driverId = $trip->driver_id;
-            $pickupTime = strtotime($trip->pickup_time);
-            $dropOffTime = strtotime($trip->dropoff_time);
+            $driverId = $trip['driver_id'];  // Use array access instead of object property access
+            $pickupTime = strtotime($trip['pickup_time']);
+            $dropOffTime = strtotime($trip['dropoff_time']);
 
             $this->initializeDriverTotalTime($totalTime, $driverId, $pickupTime, $dropOffTime);
             $this->updateOverlap($totalTime, $driverId, $pickupTime);
