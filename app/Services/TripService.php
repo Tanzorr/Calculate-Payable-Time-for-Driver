@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
-use App\Models\Driver;
+
+use App\Models\Trip;
+use mysql_xdevapi\Collection;
 
 class TripService
 {
@@ -11,9 +13,9 @@ class TripService
         $totalTime = [];
 
         foreach ($trips as $trip) {
-            $driverId = $trip->driver_id;
-            $pickupTime = strtotime($trip->pickup_time);
-            $dropOffTime = strtotime($trip->dropoff_time);
+            $driverId = $trip['driver_id'];  // Use array access instead of object property access
+            $pickupTime = strtotime($trip['pickup_time']);
+            $dropOffTime = strtotime($trip['dropoff_time']);
 
             $this->initializeDriverTotalTime($totalTime, $driverId, $pickupTime, $dropOffTime);
             $this->updateOverlap($totalTime, $driverId, $pickupTime);
@@ -46,5 +48,15 @@ class TripService
 
         // Update end time if the current trip extends beyond the previous end time
         $totalTime[$driverId]['end'] = max($previousEndTime, $pickupTime);
+    }
+
+    public function getTripFromCsvLine(array $line): array
+    {
+        return [
+            'trip_id' => $line[0],
+            'driver_id' => $line[1],
+            'pickup_time' => $line[2],
+            'dropoff_time' => $line[3],
+        ];
     }
 }
