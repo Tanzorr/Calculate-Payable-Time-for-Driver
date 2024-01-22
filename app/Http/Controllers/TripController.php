@@ -5,18 +5,37 @@ namespace App\Http\Controllers;
 use App\Models\Driver;
 use App\Models\Trip;
 use App\Services\TripService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class TripController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $tirps = Trip::paginate(10);
-        return view('trips', ['trips' => $tirps]);
+        $orderBy = $request->get('order', 'trip_id');
+        $trips = Trip::orderBy($orderBy)->paginate(10);
+
+        return view('trips', ['trips' => $trips]);
+    }
+
+    public function search(Request $request)
+    {
+        $search = $request->get('search');
+        $trips = Trip::where('driver_id', 'like', '%'.$search.'%')
+            ->orWhere('trip_id', 'like', '%'. $search.'%')
+            ->orWhere('pickup_time', 'like', '%'.$search.'%')
+            ->orWhere('dropoff_time', 'like', '%'.$search.'%')
+            ->paginate(10);
+
+        return view('trips', ['trips' => $trips]);
     }
 
 
-    public function import(TripService $tripService, Request $request)
+
+
+
+
+    public function import(TripService $tripService, Request $request): RedirectResponse
     {
         $request->validate([
             'file' => 'required|mimes:xls,xlsx,csv'
@@ -39,7 +58,7 @@ class TripController extends Controller
         return back()->with('success', 'Data Imported successfully.');
     }
 
-    public function calculate(TripService $tripService)
+    public function calculate(TripService $tripService): RedirectResponse
     {
         $trips = Trip::all();
         $totalTime = $tripService->calculateTotalTime($trips);

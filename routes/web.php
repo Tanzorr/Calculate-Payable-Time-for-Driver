@@ -22,6 +22,8 @@ Route::get('/', function () {
 
 Route::get('trips', \App\Http\Controllers\TripController::class . '@index')
     ->name('trips.index');
+Route::get('trips/search', \App\Http\Controllers\TripController::class . '@search')
+    ->name('trips.search');
 
 Route::post('trips/import', \App\Http\Controllers\TripController::class . '@import')
     ->name('trips.import');
