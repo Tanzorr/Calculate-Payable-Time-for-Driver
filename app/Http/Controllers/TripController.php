@@ -21,22 +21,24 @@ class TripController extends Controller
     public function search(Request $request)
     {
         $search = $request->get('search');
-        $trips = Trip::where('driver_id', 'like', '%'.$search.'%')
-            ->orWhere('trip_id', 'like', '%'. $search.'%')
-            ->orWhere('pickup_time', 'like', '%'.$search.'%')
-            ->orWhere('dropoff_time', 'like', '%'.$search.'%')
+        $trips = Trip::where('driver_id', 'like', '%' . $search . '%')
+            ->orWhere('trip_id', 'like', '%' . $search . '%')
+            ->orWhere('pickup_time', 'like', '%' . $search . '%')
+            ->orWhere('dropoff_time', 'like', '%' . $search . '%')
             ->paginate(10);
 
         return view('trips', ['trips' => $trips]);
     }
 
 
-
-
-
-
     public function import(TripService $tripService, Request $request): RedirectResponse
     {
+        $trips = Trip::paginate(10);
+
+        if (isset($trips)) {
+            Trip::truncate();
+        }
+
         $request->validate([
             'file' => 'required|mimes:xls,xlsx,csv'
         ]);
@@ -60,6 +62,12 @@ class TripController extends Controller
 
     public function calculate(TripService $tripService): RedirectResponse
     {
+        $drivers = Driver::paginate(10);
+
+        if (isset($drivers)) {
+            Driver::truncate();
+        }
+
         $trips = Trip::all();
         $totalTime = $tripService->calculateTotalTime($trips);
 
