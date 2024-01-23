@@ -1,7 +1,7 @@
 @extends('layout.app')
 
 @section('content')
-    <h2 class="mb-5 mt-5">Drivers time report</h2>
+    <h2 class="mb-2 mt-3">Drivers time report</h2>
     <div class="pb-4">
         <a href="{{ route('trips.index') }}">Trip list</a>
     </div>

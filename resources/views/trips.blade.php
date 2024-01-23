@@ -1,7 +1,7 @@
 @extends('layout.app')
 
 @section('content')
-    <h2>Trips table</h2>
+    <h2 class="mb-2 mt-3">Trips table</h2>
     <div>
         <a href="{{ route('drivers-report.index') }}">Drivers Reports</a>
     </div>
@@ -11,14 +11,14 @@
         </div>
     @endif
     <div class="row d-flex align-items-center">
-        <form class="form mb-5 mt-5 col-lg-4" action="{{ route('trips.import') }}" method="POST"
+        <form class="d-flex mb-5 mt-5 col-lg-4" action="{{ route('trips.import') }}" method="POST"
               enctype="multipart/form-data">
             @csrf
             <input type="file" name="file" accept=".csv">
             @error('file')
             <div class="alert alert-danger">{{ $message }}</div>
             @enderror
-            <button type="submit">Import CSV</button>
+            <button type="submit" class="btn btn-primary">Import CSV</button>
         </form>
         <form class="col-lg-4" method="GET" action="{{ route('trips.calculate') }}">
             @csrf
