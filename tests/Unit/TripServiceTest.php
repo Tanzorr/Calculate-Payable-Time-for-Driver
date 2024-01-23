@@ -8,8 +8,8 @@ use Faker\Factory as FakerFactory;
 
 class TripServiceTest extends TestCase
 {
-    private $tripService;
-    private $faker;
+    private TripService $tripService;
+    private \Faker\Generator $faker;
 
     protected function setUp(): void
     {
@@ -22,7 +22,7 @@ class TripServiceTest extends TestCase
         $this->faker = FakerFactory::create();
     }
 
-    public function testCalculateTotalTime()
+    public function testCalculateTotalTime(): void
     {
         // Arrange
         $trips = [

@@ -9,7 +9,7 @@ use App\Services\DriverService;
 
 class DriverServiceTest extends TestCase
 {
-    private $driverService;
+    private DriverService $driverService;
 
     protected function setUp(): void
     {
@@ -17,7 +17,7 @@ class DriverServiceTest extends TestCase
         $this->driverService = new DriverService();
     }
 
-    public function testGetCsvHeaders()
+    public function testGetCsvHeaders(): void
     {
         $csvFileName = 'test.csv';
         $headers = $this->driverService->getCsvHeaders($csvFileName);
@@ -29,13 +29,13 @@ class DriverServiceTest extends TestCase
         $this->assertEquals('0', $headers['Expires']);
     }
 
-    public function testInitializeCsvHandle()
+    public function testInitializeCsvHandle(): void
     {
         $handle = $this->driverService->initializeCsvHandle();
         $this->assertIsResource($handle);
     }
 
-    public function testWriteCsvHeader()
+    public function testWriteCsvHeader(): void
     {
         $handle = $this->driverService->initializeCsvHandle();
         $this->driverService->writeCsvHeader($handle);
@@ -44,7 +44,7 @@ class DriverServiceTest extends TestCase
         $this->assertEquals("driver_id,total_minutes_with_passenger\n", $content);
     }
 
-    public function testWriteDriversDataToCsv()
+    public function testWriteDriversDataToCsv(): void
     {
         // Mock data for driversReport
         $driversReport = [
@@ -61,7 +61,7 @@ class DriverServiceTest extends TestCase
         $this->assertEquals($expectedContent, $content);
     }
 
-    public function testDownloadCsvResponse()
+    public function testDownloadCsvResponse(): void
     {
         // Mock data for headers
         $headers = [
