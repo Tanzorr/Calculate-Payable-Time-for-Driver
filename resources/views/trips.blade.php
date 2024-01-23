@@ -21,7 +21,7 @@
             @csrf
             <button type="submit" class="btn btn-success">Calculate Payable Time</button>
         </form>
-        <form class="col-lg-4" method="GET" action="{{ route('trips.search') }}">
+        <form class="col-lg-4 d-flex justify-content-end" method="GET" action="{{ route('trips.search') }}">
             @csrf
             <input
                 type="text"
@@ -31,7 +31,7 @@
                 value="{{ request()->input('search') }}"
                 id="search"
             />
-            <button type="submit" class="btn btn-success">submit</button>
+            <button type="submit" class="btn btn-success mx-2">submit</button>
         </form>
     </div>
     @error('file')
