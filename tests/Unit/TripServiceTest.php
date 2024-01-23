@@ -28,13 +28,13 @@ class TripServiceTest extends TestCase
         $trips = [
             [
                 'driver_id' => $this->faker->randomNumber(),
-                'pickup_time' => $this->faker->dateTime()->format('Y-m-d H:i:s'),
-                'dropoff_time' => $this->faker->dateTime()->format('Y-m-d H:i:s'),
+                'pickup_time' => $this->faker->dateTimeBetween('-1 day', 'now')->format('Y-m-d H:i:s'), // Ensure pickup time is earlier
+                'dropoff_time' => $this->faker->dateTimeBetween('now', '+1 day')->format('Y-m-d H:i:s'), // Ensure dropoff time is later
             ],
             [
                 'driver_id' => $this->faker->randomNumber(),
-                'pickup_time' => $this->faker->dateTime()->format('Y-m-d H:i:s'),
-                'dropoff_time' => $this->faker->dateTime()->format('Y-m-d H:i:s'),
+                'pickup_time' => $this->faker->dateTimeBetween('-1 day', 'now')->format('Y-m-d H:i:s'), // Ensure pickup time is earlier
+                'dropoff_time' => $this->faker->dateTimeBetween('now', '+1 day')->format('Y-m-d H:i:s'), // Ensure dropoff time is later
             ],
         ];
 
@@ -68,18 +68,43 @@ class TripServiceTest extends TestCase
 
     public function testGetWorkingMinutes()
     {
-        // Arrange
-        $timeData = [
+        // Case 1: Valid timeData
+        $validTimeData = [
+            'start' => strtotime('2022-01-01 12:00:00'),
+            'end' => strtotime('2022-01-01 14:30:00'),
+            'overlap' => 15 * 60, // in seconds
+        ];
+        $result1 = $this->tripService->getWorkingMinutes($validTimeData);
+        $this->assertIsInt($result1);
+
+        // Case 2: Negative overlap (should be treated as 0)
+        $negativeOverlapTimeData = [
+            'start' => strtotime('2022-01-01 08:00:00'),
+            'end' => strtotime('2022-01-01 10:00:00'),
+            'overlap' => 30 * 60, // in seconds
+        ];
+        $result2 = $this->tripService->getWorkingMinutes($negativeOverlapTimeData);
+        $this->assertIsInt($result2);
+        $this->assertEquals(90, $result2); // Expecting 120 minutes (2 hours)
+
+        // Case 3: Large overlap
+        $largeOverlapTimeData = [
+            'start' => strtotime('2022-01-01 18:00:00'),
+            'end' => strtotime('2022-01-01 20:00:00'),
+            'overlap' => 120 * 60, // in seconds
+        ];
+        $result3 = $this->tripService->getWorkingMinutes($largeOverlapTimeData);
+        $this->assertIsInt($result3);
+        $this->assertEquals(0, $result3); // Expecting 0 minutes (negative overlap treated as 0)
+
+        // Case 4: Random timeData generated using faker
+        $randomTimeData = [
             'start' => strtotime($this->faker->dateTime()->format('Y-m-d H:i:s')),
             'end' => strtotime($this->faker->dateTime()->format('Y-m-d H:i:s')),
-            'overlap' => $this->faker->numberBetween(0, 30), // in minutes
+            'overlap' => $this->faker->numberBetween(0, 30) * 60, // in seconds
         ];
-
-        // Act
-        $result = $this->tripService->getWorkingMinutes($timeData);
-
-        // Assert
-        $this->assertIsInt($result);
+        $result4 = $this->tripService->getWorkingMinutes($randomTimeData);
+        $this->assertIsInt($result4);
     }
 
     public function testGetTripFromCsvLine()
