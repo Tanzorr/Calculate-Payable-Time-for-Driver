@@ -10,7 +10,8 @@
             @csrf
             <button type="submit" class="btn btn-success">Download CSV file</button>
         </form>
-        <form class="col-lg-6 d-flex justify-content-end" method="GET" action="{{ route('drivers-report.search') }}" class="col-lg-6">
+        <form class="col-lg-6 d-flex justify-content-end" method="GET" action="{{ route('drivers-report.search') }}"
+              class="col-lg-6">
             @csrf
             <input
                 type="text"
@@ -27,15 +28,16 @@
         <thead>
         <tr>
             <th><a href="{{ url('trips/drivers-report?order=driver_id') }}">Driver id</a></th>
-            <th><a href="{{ url('trips/drivers-report?order=total_minutes_with_passenger') }}">Total minutes with passenger</a></th>
+            <th><a href="{{ url('trips/drivers-report?order=total_minutes_with_passenger') }}">Total minutes with
+                    passenger</a></th>
         </thead>
         <tbody>
-        @foreach($drivers as $driver)
+        @foreach($driverReports as $driverReport)
             <tr>
-                <td>{{$driver->driver_id}}</td>
-                <td>{{$driver->total_minutes_with_passenger}}</td>
+                <td>{{$driverReport->driver_id}}</td>
+                <td>{{$driverReport->total_minutes_with_passenger}}</td>
             </tr>
-            @empty($driver)
+            @empty($driverReport)
                 <tr>
                     <td colspan="2">No drivers found</td>
                 </tr>
@@ -44,6 +46,6 @@
         </tbody>
     </table>
     <div class="mt-4">
-        {{ $drivers->links('pagination::bootstrap-4') }}
+        {{ $driverReports->links('pagination::bootstrap-4') }}
     </div>
 @endsection

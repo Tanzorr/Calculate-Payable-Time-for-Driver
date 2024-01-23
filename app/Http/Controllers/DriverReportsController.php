@@ -7,23 +7,23 @@ use App\Services\DriverService;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
-class DriverController extends Controller
+class DriverReportsController extends Controller
 {
     public function index(Request $request)
     {
         $orderBy = $request->get('order', 'driver_id');
-        $drivers = Driver::orderBy($orderBy)->paginate(10);
-        return view('drivers', ['drivers' => $drivers]);
+        $driverReports = Driver::orderBy($orderBy)->paginate(10);
+        return view('driver-reports', ['driverReports' => $driverReports]);
     }
 
     public function search(Request $request)
     {
         $search = $request->get('search');
-        $drivers = Driver::where('driver_id', 'like', '%' . $search . '%')
+        $driverReports = Driver::where('driver_id', 'like', '%' . $search . '%')
             ->orWhere('total_minutes_with_passenger', 'like', '%' . $search . '%')
             ->paginate(10);
 
-        return view('drivers', ['drivers' => $drivers]);
+        return view('driver-reports', ['driverReports' => $driverReports]);
     }
 
     public function export(DriverService $driverService): StreamedResponse
