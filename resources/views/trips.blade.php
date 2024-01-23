@@ -15,9 +15,6 @@
               enctype="multipart/form-data">
             @csrf
             <input type="file" name="file" accept=".csv">
-            @error('file')
-            <div class="alert alert-danger">{{ $message }}</div>
-            @enderror
             <button type="submit" class="btn btn-primary">Import CSV</button>
         </form>
         <form class="col-lg-4" method="GET" action="{{ route('trips.calculate') }}">
@@ -37,6 +34,9 @@
             <button type="submit" class="btn btn-success">submit</button>
         </form>
     </div>
+    @error('file')
+    <div class="alert alert-danger">{{ $message }}</div>
+    @enderror
     <table class="table table-striped">
         <thead>
         <tr>

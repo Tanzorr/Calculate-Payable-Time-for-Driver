@@ -33,41 +33,36 @@ class TripController extends Controller
 
     public function import(TripService $tripService, Request $request): RedirectResponse
     {
-        $trips = Trip::paginate(10);
-
-        if (isset($trips)) {
-            Trip::truncate();
-        }
-
         $request->validate([
             'file' => 'required|mimes:xls,xlsx,csv'
         ]);
 
-        $file = $request->file('file');
-        $fileContents = file($file->getPathname());
+        if ($request->file('file')->isValid()) {
+            Trip::truncate();
+            Driver::truncate();
 
-        foreach ($fileContents as $key => $line) {
-            if ($key == 0) {
-                continue;
+            $file = $request->file('file');
+            $fileContents = file($file->getPathname());
+
+            foreach ($fileContents as $key => $line) {
+                if ($key == 0) {
+                    continue;
+                }
+
+                $line = explode(',', $line);
+                $tripLine = $tripService->getTripFromCsvLine($line);
+
+                Trip::create($tripLine);
             }
 
-            $line = explode(',', $line);
-            $tripLine = $tripService->getTripFromCsvLine($line);
-
-            Trip::create($tripLine);
+            return back()->with('success', 'Data Imported successfully.');
+        } else {
+            return back()->withErrors(['file' => 'Invalid file format. Please upload a valid Excel (xls, xlsx) or CSV file.']);
         }
-
-        return back()->with('success', 'Data Imported successfully.');
     }
 
     public function calculate(TripService $tripService): RedirectResponse
     {
-        $drivers = Driver::paginate(10);
-
-        if (isset($drivers)) {
-            Driver::truncate();
-        }
-
         $trips = Trip::all();
         $totalTime = $tripService->calculateTotalTime($trips);
 

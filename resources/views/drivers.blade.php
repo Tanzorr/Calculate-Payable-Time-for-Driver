@@ -10,7 +10,7 @@
             @csrf
             <button type="submit" class="btn btn-success">Download CSV file</button>
         </form>
-        <form class="col-lg-4" method="GET" action="{{ route('drivers-report.search') }}" class="col-lg-6">
+        <form class="col-lg-6 d-flex justify-content-end" method="GET" action="{{ route('drivers-report.search') }}" class="col-lg-6">
             @csrf
             <input
                 type="text"
@@ -20,7 +20,7 @@
                 value="{{ request()->input('search') }}"
                 id="search"
             />
-            <button type="submit" class="btn btn-success">submit</button>
+            <button type="submit" class="btn btn-success mx-2">submit</button>
         </form>
     </div>
     <table class="table table-striped">
