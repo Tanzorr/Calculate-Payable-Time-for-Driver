@@ -31,10 +31,10 @@ Route::post('trips/import', \App\Http\Controllers\TripController::class . '@impo
 Route::get('trips/calculate', \App\Http\Controllers\TripController::class . '@calculate')
     ->name('trips.calculate');
 
-Route::get('trips/drivers-report', \App\Http\Controllers\DriverController::class . '@index')
+Route::get('trips/drivers-report', \App\Http\Controllers\DriverReportsController::class . '@index')
     ->name('drivers-report.index');
-Route::get('trips/drivers-report/search', \App\Http\Controllers\DriverController::class . '@search')
+Route::get('trips/drivers-report/search', \App\Http\Controllers\DriverReportsController::class . '@search')
     ->name('drivers-report.search');
 
-Route::get('trips/drivers-report/export', \App\Http\Controllers\DriverController::class . '@export')
+Route::get('trips/drivers-report/export', \App\Http\Controllers\DriverReportsController::class . '@export')
     ->name('drivers-report.export');
