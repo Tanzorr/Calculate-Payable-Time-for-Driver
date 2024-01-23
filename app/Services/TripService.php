@@ -2,10 +2,6 @@
 
 namespace App\Services;
 
-
-use App\Models\Trip;
-use mysql_xdevapi\Collection;
-
 class TripService
 {
     public function calculateTotalTime($trips): array
@@ -13,12 +9,12 @@ class TripService
         $totalTime = [];
 
         foreach ($trips as $trip) {
-            $driverId = $trip['driver_id'];  // Use array access instead of object property access
+            $driverId = $trip['driver_id'];
             $pickupTime = strtotime($trip['pickup_time']);
             $dropOffTime = strtotime($trip['dropoff_time']);
 
             $this->initializeDriverTotalTime($totalTime, $driverId, $pickupTime, $dropOffTime);
-            $this->updateOverlap($totalTime, $driverId, $pickupTime);
+            $this->updateOverlap($totalTime, $driverId, $pickupTime, $dropOffTime);
         }
 
         return $totalTime;
@@ -26,7 +22,10 @@ class TripService
 
     public function getWorkingMinutes($timeData): int
     {
-        return round(($timeData['end'] - $timeData['start'] - $timeData['overlap']) / 60); // Convert seconds to minutes
+        $totalWorkedTimeInSeconds = $timeData['end'] - $timeData['start'] - $timeData['overlap'];
+        $totalWorkedTimeInMinutes = $totalWorkedTimeInSeconds / 60;
+
+        return round($totalWorkedTimeInMinutes);
     }
 
     private function initializeDriverTotalTime(&$totalTime, $driverId, $pickupTime, $dropOffTime): void
@@ -40,14 +39,19 @@ class TripService
         }
     }
 
-    private function updateOverlap(&$totalTime, $driverId, $pickupTime): void
+    private function updateOverlap(&$totalTime, $driverId, $pickupTime, $dropOffTime): void
     {
-        $previousEndTime = $totalTime[$driverId]['end'];
-        $overlap = max(0, $previousEndTime - $pickupTime);
-        $totalTime[$driverId]['overlap'] += $overlap / 60; // Convert seconds to minutes
+        if ($pickupTime >= $totalTime[$driverId]['end']) {
+            $previousEndTime = $totalTime[$driverId]['end'];
+            $overlapInSeconds = $pickupTime - $previousEndTime;
+            $totalTime[$driverId]['overlap'] += $overlapInSeconds;
 
-        // Update end time if the current trip extends beyond the previous end time
-        $totalTime[$driverId]['end'] = max($previousEndTime, $pickupTime);
+
+            $totalTime[$driverId]['end'] = $dropOffTime;
+        } else {
+            $overlapInSeconds = max(0, $pickupTime - $totalTime[$driverId]['end']);
+            $totalTime[$driverId]['overlap'] += $overlapInSeconds;
+        }
     }
 
     public function getTripFromCsvLine(array $line): array

@@ -22,6 +22,8 @@ Route::get('/', function () {
 
 Route::get('trips', \App\Http\Controllers\TripController::class . '@index')
     ->name('trips.index');
+Route::get('trips/search', \App\Http\Controllers\TripController::class . '@search')
+    ->name('trips.search');
 
 Route::post('trips/import', \App\Http\Controllers\TripController::class . '@import')
     ->name('trips.import');
@@ -31,6 +33,8 @@ Route::get('trips/calculate', \App\Http\Controllers\TripController::class . '@ca
 
 Route::get('trips/drivers-report', \App\Http\Controllers\DriverController::class . '@index')
     ->name('drivers-report.index');
+Route::get('trips/drivers-report/search', \App\Http\Controllers\DriverController::class . '@search')
+    ->name('drivers-report.search');
 
 Route::get('trips/drivers-report/export', \App\Http\Controllers\DriverController::class . '@export')
     ->name('drivers-report.export');
