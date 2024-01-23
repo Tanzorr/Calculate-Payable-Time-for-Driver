@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('drivers', function (Blueprint $table) {
+        Schema::create('driver_reports', function (Blueprint $table) {
             $table->id();
             $table->string('driver_id');
             $table->string('total_minutes_with_passenger');

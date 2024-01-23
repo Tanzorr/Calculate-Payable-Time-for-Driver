@@ -10,7 +10,7 @@
             {{ session('success') }}
         </div>
     @endif
-    <div class="row d-flex align-items-center">
+    <div class="row d-flex align-items-center justify-content-between">
         <form class="d-flex mb-5 mt-5 col-lg-4" action="{{ route('trips.import') }}" method="POST"
               enctype="multipart/form-data">
             @csrf
@@ -21,18 +21,10 @@
             @csrf
             <button type="submit" class="btn btn-success">Calculate Payable Time</button>
         </form>
-        <form class="col-lg-4 d-flex justify-content-end" method="GET" action="{{ route('trips.search') }}">
-            @csrf
-            <input
-                type="text"
-                class="search"
-                placeholder="Search..."
-                name="search"
-                value="{{ request()->input('search') }}"
-                id="search"
-            />
-            <button type="submit" class="btn btn-success mx-2">submit</button>
-        </form>
+        <x-search-form
+            :action="route('trips.search')"
+            :seachValue="request()->input('search')"
+        ></x-search-form>
     </div>
     @error('file')
     <div class="alert alert-danger">{{ $message }}</div>

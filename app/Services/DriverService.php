@@ -20,6 +20,7 @@ class DriverService
     {
         return fopen('php://temp', 'w');
     }
+
     public function writeCsvHeader($handle): void
     {
         fputcsv($handle, ['driver_id', 'total_minutes_with_passenger']);

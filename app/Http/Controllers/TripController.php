@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Driver;
+use App\Models\DriverReport;
 use App\Models\Trip;
 use App\Services\TripService;
 use Illuminate\Http\RedirectResponse;
@@ -39,7 +39,7 @@ class TripController extends Controller
 
         if ($request->file('file')->isValid()) {
             Trip::truncate();
-            Driver::truncate();
+            DriverReport::truncate();
 
             $file = $request->file('file');
             $fileContents = file($file->getPathname());
@@ -67,7 +67,7 @@ class TripController extends Controller
         $totalTime = $tripService->calculateTotalTime($trips);
 
         foreach ($totalTime as $driverId => $timeData) {
-            Driver::create([
+            DriverReport::create([
                 'driver_id' => $driverId,
                 'total_minutes_with_passenger' => $tripService->getWorkingMinutes($timeData),
             ]);
