@@ -10,6 +10,13 @@ use Illuminate\Http\Request;
 
 class TripController extends Controller
 {
+    private TripService $tripService;
+
+    public function __construct(TripService $tripService)
+    {
+        $this->tripService = $tripService;
+    }
+
     public function index(Request $request)
     {
         $orderBy = $request->get('order', 'trip_id');
@@ -31,7 +38,7 @@ class TripController extends Controller
     }
 
 
-    public function import(TripService $tripService, Request $request): RedirectResponse
+    public function import(Request $request): RedirectResponse
     {
         $request->validate([
             'file' => 'required|mimes:xls,xlsx,csv'
@@ -50,7 +57,7 @@ class TripController extends Controller
                 }
 
                 $line = explode(',', $line);
-                $tripLine = $tripService->getTripFromCsvLine($line);
+                $tripLine = $this->tripService->getTripFromCsvLine($line);
 
                 Trip::create($tripLine);
             }
@@ -61,15 +68,15 @@ class TripController extends Controller
         }
     }
 
-    public function calculate(TripService $tripService): RedirectResponse
+    public function calculate(): RedirectResponse
     {
         $trips = Trip::all();
-        $totalTime = $tripService->calculateTotalTime($trips);
+        $totalTime = $this->tripService->calculateTotalTime($trips);
 
         foreach ($totalTime as $driverId => $timeData) {
             DriverReport::create([
                 'driver_id' => $driverId,
-                'total_minutes_with_passenger' => $tripService->getWorkingMinutes($timeData),
+                'total_minutes_with_passenger' => $this->tripService->getWorkingMinutes($timeData),
             ]);
         }
 
