@@ -1,0 +1,60 @@
+Олександре, доброго дня!
+Нижче пропоную ознайомитися із відгуком на тестове завдання:
+
+Алгоритм обрахунку часів невірний. Теоретично, він можливо рахує щось схоже з часом, коли водій був без пасажирів, і лише в ідеальних умовах, коли в БД тріпи збережені в “правильному” порядку і ще немає перетинів. http://localhost/  відкриває сторінку привітання ларавелю, без відкриття коду неможливо перейти в сторінки проектупри старті проекту через  composer setup  відсутня пагінація грідівє потенційна  вразливість до SQL ін'єкції,
+ $search = $request->get('search');
+        $driverReports = DriverReport::where('driver_id', 'like', '%' . $search . '%')
+
+Запит пошуку має дуже складну вибірку з БД при великих файлах це все буде працювати некоректно. Для роботи з csv є більш оптимальні рішення - сам ларавель дає відповідні засоби.
+$fileContents = file($file->getPathname());
+foreach ($fileContents as $key => $line) {
+  $line = explode(',', $line);
+
+Дублювання коду
+        if ($pickupTime >= $totalTime[$driverId]['end']) {
+            $previousEndTime = $totalTime[$driverId]['end'];
+            $overlapInSeconds = $pickupTime - $previousEndTime;
+            $totalTime[$driverId]['overlap'] += $overlapInSeconds;
+
+
+            $totalTime[$driverId]['end'] = $dropOffTime;
+        } else {
+            $overlapInSeconds = max(0, $pickupTime - $totalTime[$driverId]['end']);
+            $totalTime[$driverId]['overlap'] += $overlapInSeconds;
+        }
+
+В блейт темплейтах краще використовувати аліаси, а непрямі урли, хоча в деяких місцях використано наприклад route(‘trips.calculate’):
+<th><a href="{{ url('trips/drivers-report?order=driver_id') }}">Driver id</a></th>
+
+При наступних кліках на  кнопку Calculate Payable Time , дані щодо репорту дублюються. Опис роутів записаний застарілим підходом:
+Route::get('trips/calculate', \App\Http\Controllers\TripController::class . '@calculate')
+
+краще
+Route::get('trips/calculate', [TripController::class, 'calculate'])
+
+
+Та попри вищенаведене, ми дуже вдячні за приділений час та наполегливість у виконанні завдання.
+
+Оцінка тестового завдання привели нас до висновку, що GIS Art зовсім не та компанія, що відповідає твоїм технічним професійним навичкам та досвіду.
+
+
+
+Рекомендуємо для покращення хард скілів:
+
+бути більш уважнішим до деталей
+дотримуватися одного підходу в написанні коду
+почитати бест практики, оптимальних алгоритмів для  роботи з csv
+поглибити знання в  написання тестів, тест повинен покривати всі варіанти алгоритму(методу/сервісу), а не лише 1 хепі пас
+Від імені компанії я бажаю тобі успіхів у пошуках та розвитку, і сподіваюся на подальшу можливість до співпраці.
+
+
+
+
+--
+Have a great day and all the best!
+
+Ihor Derevianyi
+HR Generalist
+GIS Art
++38(063) 941 5232
+i.derevianyi@gis-art.com

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ImportTripRequest;
 use App\Models\DriverReport;
 use App\Models\Trip;
 use App\Services\TripService;
@@ -28,11 +29,7 @@ class TripController extends Controller
     public function search(Request $request)
     {
         $search = $request->get('search');
-        $trips = Trip::where('driver_id', 'like', '%' . $search . '%')
-            ->orWhere('trip_id', 'like', '%' . $search . '%')
-            ->orWhere('pickup_time', 'like', '%' . $search . '%')
-            ->orWhere('dropoff_time', 'like', '%' . $search . '%')
-            ->paginate(10);
+        $trips = Trip::search($search)->paginate(10);
 
         return view('trips', ['trips' => $trips]);
     }
@@ -67,6 +64,7 @@ class TripController extends Controller
             return back()->withErrors(['file' => 'Invalid file format. Please upload a valid Excel (xls, xlsx) or CSV file.']);
         }
     }
+
 
     public function calculate(): RedirectResponse
     {
