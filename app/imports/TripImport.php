@@ -7,6 +7,7 @@ use Maatwebsite\Excel\Concerns\ToModel;
 
 class TripImport implements ToModel
 {
+    // предполагаю что ты хотел использовать пакет, ноя не нашёл места где он бы высвечивался
     public function model(array $row)
     {
         return new Trip([

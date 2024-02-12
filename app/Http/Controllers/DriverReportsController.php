@@ -28,6 +28,7 @@ class DriverReportsController extends Controller
 
     public function export(DriverService $driverService): StreamedResponse
     {
+        // если таблица отчётов пуста то и возвращать нечего
         $driversReport = DriverReport::all();
         $csvFileName = 'drivers-report.csv';
 

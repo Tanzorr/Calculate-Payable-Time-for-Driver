@@ -14,7 +14,7 @@
         <form class="d-flex mb-5 mt-5 col-lg-4" action="{{ route('trips.import') }}" method="POST"
               enctype="multipart/form-data">
             @csrf
-            <input type="file" name="file" accept=".csv">
+            <input type="file" name="file" accept="*.csv">
             <button type="submit" class="btn btn-primary">Import CSV</button>
         </form>
         <form class="col-lg-4" method="GET" action="{{ route('trips.calculate') }}">

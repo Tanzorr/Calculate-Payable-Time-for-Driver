@@ -6,6 +6,11 @@ namespace App\Services;
 class DriverService
 {
 
+
+    // почти весб этот сервис можно заменить соджержимым которое ты найдёшь по этой ссылку
+    // https://laravel.com/docs/10.x/responses#file-downloads
+    //
+    // response()->download($filePath)
     public function getCsvHeaders(string $csvFileName): array
     {
         return [
