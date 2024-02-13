@@ -2,15 +2,10 @@
 
 namespace App\Services;
 
-
 class DriverService
 {
-
-
-    // почти весб этот сервис можно заменить соджержимым которое ты найдёшь по этой ссылку
-    // https://laravel.com/docs/10.x/responses#file-downloads
-    //
-    // response()->download($filePath)
+    // сервисы должны работать как чёрная коробочка, ты не должен вызывать кучу методов чтобы получить один результат
+    // тебе тут нужен скорее метод который вернёт handle в который записанны все данные а вот заголовки должны отправиться на уровень контроллера.
     public function getCsvHeaders(string $csvFileName): array
     {
         return [
@@ -45,7 +40,7 @@ class DriverService
     public function downloadCsvResponse($handle, string $csvFileName, array $headers)
     {
         return response()->streamDownload(
-            fn() => fpassthru($handle),
+            fn () => fpassthru($handle),
             $csvFileName,
             $headers
         );
